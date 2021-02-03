@@ -1,41 +1,59 @@
-import React, { ChangeEvent, FormEvent } from 'react';
-import { Typography, makeStyles, TextField, Grid, Button, InputLabel, Theme } from '@material-ui/core';
-import { useAppState } from '../../../state';
+import React, { ChangeEvent, FormEvent } from "react";
+import {
+  Typography,
+  makeStyles,
+  TextField,
+  Grid,
+  Button,
+  InputLabel,
+  Theme
+} from "@material-ui/core";
+import { useAppState } from "../../../state";
 
 const useStyles = makeStyles((theme: Theme) => ({
   gutterBottom: {
-    marginBottom: '1em',
+    marginBottom: "1em"
   },
   inputContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    margin: '1.5em 0 3.5em',
-    '& div:not(:last-child)': {
-      marginRight: '1em',
+    display: "flex",
+    justifyContent: "space-between",
+    margin: "1.5em 0 3.5em",
+    "& div:not(:last-child)": {
+      marginRight: "1em"
     },
-    [theme.breakpoints.down('sm')]: {
-      margin: '1.5em 0 2em',
-    },
+    [theme.breakpoints.down("sm")]: {
+      margin: "1.5em 0 2em"
+    }
   },
   textFieldContainer: {
-    width: '100%',
+    width: "100%"
   },
   continueButton: {
-    [theme.breakpoints.down('sm')]: {
-      width: '100%',
-    },
-  },
+    [theme.breakpoints.down("sm")]: {
+      width: "100%"
+    }
+  }
 }));
 
 interface RoomNameScreenProps {
   name: string;
   roomName: string;
+  phoneNumber: string;
   setName: (name: string) => void;
   setRoomName: (roomName: string) => void;
+  setPhoneNumber: (phoneNumber: string) => void;
   handleSubmit: (event: FormEvent<HTMLFormElement>) => void;
 }
 
-export default function RoomNameScreen({ name, roomName, setName, setRoomName, handleSubmit }: RoomNameScreenProps) {
+export default function RoomNameScreen({
+  name,
+  roomName,
+  phoneNumber,
+  setName,
+  setRoomName,
+  setPhoneNumber,
+  handleSubmit
+}: RoomNameScreenProps) {
   const classes = useStyles();
   const { user } = useAppState();
 
@@ -47,7 +65,13 @@ export default function RoomNameScreen({ name, roomName, setName, setRoomName, h
     setRoomName(event.target.value);
   };
 
-  const hasUsername = !window.location.search.includes('customIdentity=true') && user?.displayName;
+  const handlePhoneNumberChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setPhoneNumber(event.target.value);
+  };
+
+  const hasUsername =
+    !window.location.search.includes("customIdentity=true") &&
+    user?.displayName;
 
   return (
     <>
@@ -90,13 +114,27 @@ export default function RoomNameScreen({ name, roomName, setName, setRoomName, h
               onChange={handleRoomNameChange}
             />
           </div>
+          <div className={classes.textFieldContainer}>
+            <InputLabel shrink htmlFor="input-phone-number">
+              Phone Number
+            </InputLabel>
+            <TextField
+              autoCapitalize="false"
+              id="input-phone-number"
+              variant="outlined"
+              fullWidth
+              size="small"
+              value={phoneNumber}
+              onChange={handlePhoneNumberChange}
+            />
+          </div>
         </div>
         <Grid container justify="flex-end">
           <Button
             variant="contained"
             type="submit"
             color="primary"
-            disabled={!name || !roomName}
+            disabled={!name || !roomName || !phoneNumber}
             className={classes.continueButton}
           >
             Continue
