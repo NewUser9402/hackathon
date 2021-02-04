@@ -8,11 +8,10 @@ import Menu from "./Menu/Menu";
 
 import useRoomState from "../../hooks/useRoomState/useRoomState";
 import useVideoContext from "../../hooks/useVideoContext/useVideoContext";
-import { Typography, Grid, Hidden } from "@material-ui/core";
+import { Typography, Grid, Hidden, TextField } from "@material-ui/core";
 import ToggleAudioButton from "../Buttons/ToggleAudioButton/ToggleAudioButton";
 import ToggleVideoButton from "../Buttons/ToggleVideoButton/ToggleVideoButton";
 import ToggleScreenShareButton from "../Buttons/ToogleScreenShareButton/ToggleScreenShareButton";
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
@@ -99,7 +98,31 @@ export default function MenuBar() {
                 )}
               </Hidden>
               <FlipCameraButton />
-              <div>hello there</div>
+
+              <div style={{ marginTop: "12px" }}>
+                <TextField
+                  autoCapitalize="false"
+                  id="input-text"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  // value={phoneNumber}
+                  // onChange={handlePhoneNumberChange}
+                />
+              </div>
+              <div
+                style={{ height: "38px", marginTop: "12px", marginLeft: "5px" }}
+              >
+                <Button
+                  variant="contained"
+                  type="submit"
+                  color="primary"
+                  // disabled={!name || !roomName || !phoneNumber}
+                  // className={classes.continueButton}
+                >
+                  Send
+                </Button>
+              </div>
             </Grid>
           </Grid>
           <Hidden smDown>
