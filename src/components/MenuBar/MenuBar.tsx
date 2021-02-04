@@ -12,6 +12,7 @@ import { Typography, Grid, Hidden, TextField } from "@material-ui/core";
 import ToggleAudioButton from "../Buttons/ToggleAudioButton/ToggleAudioButton";
 import ToggleVideoButton from "../Buttons/ToggleVideoButton/ToggleVideoButton";
 import ToggleScreenShareButton from "../Buttons/ToogleScreenShareButton/ToggleScreenShareButton";
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
@@ -61,7 +62,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function MenuBar() {
+interface MenuBarProps {
+  sendMessage: any;
+}
+
+export default function MenuBar({ sendMessage }: MenuBarProps) {
   const classes = useStyles();
   const { isSharingScreen, toggleScreenShare } = useVideoContext();
   const roomState = useRoomState();
@@ -118,7 +123,7 @@ export default function MenuBar() {
                   type="submit"
                   color="primary"
                   // disabled={!name || !roomName || !phoneNumber}
-                  // className={classes.continueButton}
+                  onClick={() => sendMessage()}
                 >
                   Send
                 </Button>

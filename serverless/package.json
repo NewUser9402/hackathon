@@ -1,0 +1,27 @@
+{
+    "name": "aktivate",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "twilio-run --port=8082",
+        "predeploy": "echo '{}' > ./.twilio-functions",
+        "deploy:dev": "npm run predeploy && twilio-run deploy",
+        "update": "npm run predeploy && twilio-run deploy --override-existing-project"
+    },
+    "dependencies": {
+        "axios": "^0.19.2",
+        "install": "^0.13.0",
+        "node-fetch": "^2.6.1",
+        "npm": "^6.14.8",
+        "twilio": "^3.46.0",
+        "twilio-flex-token-validator": "^1.5.3",
+        "twilio-video": "^2.7.3"
+    },
+    "devDependencies": {
+        "twilio-run": "^2.6.0"
+    },
+    "engines": {
+        "node": "10"
+    }
+}

@@ -1,17 +1,25 @@
-import React, { createContext, useContext, useReducer, useState } from 'react';
-import { RoomType } from '../types';
-import { TwilioError } from 'twilio-video';
-import { settingsReducer, initialSettings, Settings, SettingsAction } from './settings/settingsReducer';
-import useActiveSinkId from './useActiveSinkId/useActiveSinkId';
-import useFirebaseAuth from './useFirebaseAuth/useFirebaseAuth';
-import usePasscodeAuth from './usePasscodeAuth/usePasscodeAuth';
-import { User } from 'firebase';
+import React, { createContext, useContext, useReducer, useState } from "react";
+import { RoomType } from "../types";
+import { TwilioError } from "twilio-video";
+import {
+  settingsReducer,
+  initialSettings,
+  Settings,
+  SettingsAction
+} from "./settings/settingsReducer";
+import useActiveSinkId from "./useActiveSinkId/useActiveSinkId";
+import useFirebaseAuth from "./useFirebaseAuth/useFirebaseAuth";
+import usePasscodeAuth from "./usePasscodeAuth/usePasscodeAuth";
+import { User } from "firebase";
 
 export interface StateContextType {
   error: TwilioError | null;
   setError(error: TwilioError | null): void;
   getToken(name: string, room: string, passcode?: string): Promise<string>;
-  user?: User | null | { displayName: undefined; photoURL: undefined; passcode?: string };
+  user?:
+    | User
+    | null
+    | { displayName: undefined; photoURL: undefined; passcode?: string };
   signIn?(passcode?: string): Promise<void>;
   signOut?(): Promise<void>;
   isAuthReady?: boolean;
@@ -38,7 +46,10 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
   const [error, setError] = useState<TwilioError | null>(null);
   const [isFetching, setIsFetching] = useState(false);
   const [activeSinkId, setActiveSinkId] = useActiveSinkId();
-  const [settings, dispatchSetting] = useReducer(settingsReducer, initialSettings);
+  const [settings, dispatchSetting] = useReducer(
+    settingsReducer,
+    initialSettings
+  );
 
   let contextValue = {
     error,
@@ -47,36 +58,41 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
     activeSinkId,
     setActiveSinkId,
     settings,
-    dispatchSetting,
+    dispatchSetting
   } as StateContextType;
 
-  if (process.env.REACT_APP_SET_AUTH === 'firebase') {
+  if (process.env.REACT_APP_SET_AUTH === "firebase") {
     contextValue = {
       ...contextValue,
-      ...useFirebaseAuth(), // eslint-disable-line react-hooks/rules-of-hooks
+      ...useFirebaseAuth() // eslint-disable-line react-hooks/rules-of-hooks
     };
-  } else if (process.env.REACT_APP_SET_AUTH === 'passcode') {
+  } else if (process.env.REACT_APP_SET_AUTH === "passcode") {
     contextValue = {
       ...contextValue,
-      ...usePasscodeAuth(), // eslint-disable-line react-hooks/rules-of-hooks
+      ...usePasscodeAuth() // eslint-disable-line react-hooks/rules-of-hooks
     };
   } else {
     contextValue = {
       ...contextValue,
       getToken: async (identity, roomName) => {
         const headers = new window.Headers();
-        const endpoint = process.env.REACT_APP_TOKEN_ENDPOINT || '/token';
+        const endpoint = process.env.REACT_APP_TOKEN_ENDPOINT || "/token";
         const params = new window.URLSearchParams({ identity, roomName });
 
-        return fetch(`${endpoint}?${params}`, { headers }).then(res => res.text());
-      },
+        return fetch(`${endpoint}?${params}`, { headers }).then(res =>
+          res.text()
+        );
+      }
     };
   }
 
-  const getToken: StateContextType['getToken'] = (name, room) => {
+  const getToken: StateContextType["getToken"] = (name, room, phoneNumber) => {
+    const identityAndPhoneNumber = String(
+      name.concat("~~~").concat(String(phoneNumber))
+    );
     setIsFetching(true);
     return contextValue
-      .getToken(name, room)
+      .getToken(identityAndPhoneNumber, room)
       .then(res => {
         setIsFetching(false);
         return res;
@@ -88,13 +104,17 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
       });
   };
 
-  return <StateContext.Provider value={{ ...contextValue, getToken }}>{props.children}</StateContext.Provider>;
+  return (
+    <StateContext.Provider value={{ ...contextValue, getToken }}>
+      {props.children}
+    </StateContext.Provider>
+  );
 }
 
 export function useAppState() {
   const context = useContext(StateContext);
   if (!context) {
-    throw new Error('useAppState must be used within the AppStateProvider');
+    throw new Error("useAppState must be used within the AppStateProvider");
   }
   return context;
 }

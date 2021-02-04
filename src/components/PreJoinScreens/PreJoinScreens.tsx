@@ -85,6 +85,7 @@ export default function PreJoinScreens() {
         <DeviceSelectionScreen
           name={name}
           roomName={roomName}
+          phoneNumber={phoneNumber}
           setStep={setStep}
         />
       )}
