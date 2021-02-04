@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, ChangeEvent } from "react";
 import { styled, Theme } from "@material-ui/core/styles";
 
 import MenuBar from "./components/MenuBar/MenuBar";
@@ -36,23 +36,39 @@ export default function App() {
   // will look good on mobile browsers even after the location bar opens or closes.
   const height = useHeight();
 
+  const [message, setMessage] = useState("");
+
+  const handleMessageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setMessage(event.target.value);
+  };
+
   const sendMessage = () => {
     let phoneNumbers: String[] = [];
     room.participants.forEach(participant => {
       if (participant.identity && participant.identity.split("~~~").length) {
-        phoneNumbers.push(participant.identity.split("~~~")[1]);
+        const rawPhoneNumber = participant.identity.split("~~~")[1];
+        const whiteSpaceRemovedPhoneNumber = rawPhoneNumber.replace(/\s/g, "");
+        if (
+          /^\d+$/.test(whiteSpaceRemovedPhoneNumber) &&
+          whiteSpaceRemovedPhoneNumber.length === 10
+        ) {
+          phoneNumbers.push("+1".concat(whiteSpaceRemovedPhoneNumber));
+        }
       }
     });
 
-    console.log(phoneNumbers);
-    fetch("https://aktivate-2788-dev.twil.io/sendMessage", {
+    const payload = { phoneNumbers, message };
+
+    console.log(payload);
+    // fetch('http://localhost:8081/sendMessage', {
+    fetch("/sendMessage", {
       method: "POST",
-      body: JSON.stringify([{ Text: "x" }]),
+      body: JSON.stringify(payload),
       headers: {
+        "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*"
       }
     })
-      .then(res => res.json())
       .then(res => {
         console.log(res);
       })
@@ -70,7 +86,12 @@ export default function App() {
           <ReconnectingNotification />
           <MobileTopMenuBar />
           <Room />
-          <MenuBar sendMessage={sendMessage} />
+          <MenuBar
+            message={message}
+            setMessage={setMessage}
+            handleMessageChange={handleMessageChange}
+            sendMessage={sendMessage}
+          />
         </Main>
       )}
     </Container>

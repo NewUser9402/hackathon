@@ -3,8 +3,9 @@ exports.handler = async function (context, event, callback) {
     let response = new Twilio.Response();
     let headers = {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type"
+        "Access-Control-Allow-Methods": "GET, POST",
+        "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
+        "Content-Type": "application/json"
     };
     
     // Set headers in response

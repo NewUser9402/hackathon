@@ -63,10 +63,18 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface MenuBarProps {
+  message: string;
+  setMessage: any;
+  handleMessageChange: any;
   sendMessage: any;
 }
 
-export default function MenuBar({ sendMessage }: MenuBarProps) {
+export default function MenuBar({
+  message,
+  setMessage,
+  handleMessageChange,
+  sendMessage
+}: MenuBarProps) {
   const classes = useStyles();
   const { isSharingScreen, toggleScreenShare } = useVideoContext();
   const roomState = useRoomState();
@@ -111,8 +119,8 @@ export default function MenuBar({ sendMessage }: MenuBarProps) {
                   variant="outlined"
                   fullWidth
                   size="small"
-                  // value={phoneNumber}
-                  // onChange={handlePhoneNumberChange}
+                  value={message}
+                  onChange={handleMessageChange}
                 />
               </div>
               <div
@@ -122,7 +130,7 @@ export default function MenuBar({ sendMessage }: MenuBarProps) {
                   variant="contained"
                   type="submit"
                   color="primary"
-                  // disabled={!name || !roomName || !phoneNumber}
+                  disabled={!message}
                   onClick={() => sendMessage()}
                 >
                   Send
