@@ -37,16 +37,32 @@ app.post('/sendMessage', (req, res) => {
   const client = new twilio(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
 
   console.log(req.body);
+  const message = req.body.message;
+  const phoneNumbers = req.body.phoneNumbers;
+  console.log(String(message));
 
-  client.messages.create({
-    body: 'hi',
-    from: '+16786790494',
-    to: '+16781111111‬',
-  }).then(() => {
-      res.send();
-  }).catch((err) => {
-      throw new Error(err);
-  });
+  // client.messages.create({
+  //   body: String(message),
+  //   from: '+16786790494',
+  //   to: phoneNumbers[0],
+  // });
+  
+  try {
+    phoneNumbers.forEach(async (phoneNumber) => {
+        await client.messages.create({
+          body: String(message),
+          from: '+16786790494',
+          to: phoneNumber,
+        });
+    });
+
+    // setTimeout(() => {res.send();}, 3000)
+    res.send();
+  }
+  catch(err) {
+    console.log('error');
+    throw new Error(err);
+  }
 });
 
 app.get('*', (_, res) => res.sendFile(path.join(__dirname, 'build/index.html')));

@@ -52,15 +52,20 @@ export default function App() {
           /^\d+$/.test(whiteSpaceRemovedPhoneNumber) &&
           whiteSpaceRemovedPhoneNumber.length === 10
         ) {
+          console.log("here");
           phoneNumbers.push("+1".concat(whiteSpaceRemovedPhoneNumber));
+          console.log(phoneNumbers);
+        } else {
+          console.log(whiteSpaceRemovedPhoneNumber);
         }
+      } else {
+        console.log("here2");
       }
     });
 
     const payload = { phoneNumbers, message };
-
     console.log(payload);
-    // fetch('http://localhost:8081/sendMessage', {
+
     fetch("/sendMessage", {
       method: "POST",
       body: JSON.stringify(payload),
